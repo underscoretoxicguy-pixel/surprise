@@ -1,24 +1,40 @@
-let hold = document.getElementById("holdCircle");
-let progress = document.getElementById("progress");
-let music = document.getElementById("bgMusic");
-let holdTime = 0, timer, musicStarted = false;
+const hold = document.getElementById("holdCircle");
+const progress = document.getElementById("progress");
+const music = document.getElementById("bgMusic");
+
+let holdTime = 0;
+let timer = null;
+let musicStarted = false;
+
+// Prevent mobile default behavior
+hold.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
 
 hold.addEventListener("mousedown", startHold);
 hold.addEventListener("touchstart", startHold);
+
 hold.addEventListener("mouseup", stopHold);
+hold.addEventListener("mouseleave", stopHold);
 hold.addEventListener("touchend", stopHold);
+hold.addEventListener("touchcancel", stopHold);
 
 function startHold() {
+  if (timer) return; // prevent double start
+
   if (!musicStarted) {
     music.volume = 0.4;
-    music.play();
+    music.play().catch(() => {});
     musicStarted = true;
   }
+
+  holdTime = 0;
+  progress.style.strokeDashoffset = 408;
+
   timer = setInterval(() => {
     holdTime++;
     progress.style.strokeDashoffset = 408 - holdTime * 4;
+
     if (holdTime >= 102) {
-      clearInterval(timer);
+      stopHold();
       nextPage(2);
     }
   }, 20);
@@ -26,32 +42,40 @@ function startHold() {
 
 function stopHold() {
   clearInterval(timer);
+  timer = null;
 }
 
+/* PAGE SWITCH */
 function nextPage(n) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("page" + n).classList.add("active");
+
   if (n === 3 || n === 5) launchConfetti();
 }
 
-/* Drag */
+/* DRAGGABLE CARDS */
 document.querySelectorAll(".draggable").forEach(card => {
-  card.onmousedown = e => {
-    let shiftX = e.clientX - card.offsetLeft;
-    let shiftY = e.clientY - card.offsetTop;
-    document.onmousemove = ev => {
-      card.style.left = ev.pageX - shiftX + "px";
-      card.style.top = ev.pageY - shiftY + "px";
-    };
-    document.onmouseup = () => document.onmousemove = null;
-  };
+  let offsetX, offsetY;
+
+  card.addEventListener("touchstart", e => {
+    const t = e.touches[0];
+    offsetX = t.clientX - card.offsetLeft;
+    offsetY = t.clientY - card.offsetTop;
+  });
+
+  card.addEventListener("touchmove", e => {
+    const t = e.touches[0];
+    card.style.left = t.clientX - offsetX + "px";
+    card.style.top = t.clientY - offsetY + "px";
+  });
 });
 
-/* Confetti */
+/* CONFETTI */
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
 canvas.width = innerWidth;
 canvas.height = innerHeight;
+
 let confetti = [];
 
 function launchConfetti() {
@@ -62,7 +86,7 @@ function launchConfetti() {
       y: -20,
       r: Math.random() * 6 + 4,
       d: Math.random() * 4 + 2,
-      c: hsl(${Math.random()*360},100%,70%)
+      c: hsl(${Math.random() * 360},100%,70%)
     });
   }
   animateConfetti();
@@ -80,3 +104,4 @@ function animateConfetti() {
   confetti = confetti.filter(p => p.y < canvas.height);
   if (confetti.length) requestAnimationFrame(animateConfetti);
 }
+
