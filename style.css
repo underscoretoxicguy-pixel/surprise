@@ -24,6 +24,7 @@ body {
   width: 150px;
   margin: 40px auto;
   position: relative;
+  touch-action: none;
 }
 
 svg {
