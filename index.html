@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Surprise</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<audio id="bgMusic" loop>
+  <source src="music/mann-mera.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="confetti"></canvas>
+
+<div class="page active" id="page1">
+  <h1>A little surprise for you</h1>
+  <p>Before this year begins</p>
+
+  <div id="holdCircle">
+    <svg width="150" height="150">
+      <circle cx="75" cy="75" r="65"/>
+      <circle id="progress" cx="75" cy="75" r="65"/>
+    </svg>
+    <div class="heart">❤️</div>
+  </div>
+  <span>Tap & hold</span>
+</div>
+
+<div class="page" id="page2">
+  <h1>Something is waiting for you</h1>
+  <p>Move the distractions aside</p>
+
+  <div class="cards">
+    <div class="card draggable">Bad Days</div>
+    <div class="card draggable">Work Load</div>
+    <div class="card draggable">Stress</div>
+  </div>
+
+  <div id="centerHeart" onclick="nextPage(3)">❤️</div>
+</div>
+
+<div class="page" id="page3">
+  <div class="ticket">
+    <h2>🎟 Golden Ticket</h2>
+    <p>Unlimited love & smiles</p>
+    <button onclick="nextPage(4)">Claim Pass</button>
+  </div>
+</div>
+
+<div class="page" id="page4">
+  <h1>Some moments from this year</h1>
+  <div class="gallery">
+    <img src="images/memory1.jpg">
+    <img src="images/memory2.jpg">
+    <img src="images/memory3.jpg">
+    <img src="images/memory4.jpg">
+    <img src="images/memory5.jpg">
+    <img src="images/memory6.jpg">
+    <img src="images/memory7.jpg">
+  </div>
+  <p onclick="nextPage(5)" class="tap">Tap to continue</p>
+</div>
+
+<div class="page" id="page5">
+  <h1>For You 💖</h1>
+  <img src="images/card.png" class="finalCard" onclick="nextPage(6)">
+  <p>Tap the card</p>
+</div>
+
+<div class="page" id="page6">
+  <div class="message">
+    <p contenteditable="true">
+      I hope this year brings you peace, warmth and endless smiles.
+      <br><br>
+      No matter what comes your way, I hope you always feel loved.
+      <br><br>
+      💫
+    </p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

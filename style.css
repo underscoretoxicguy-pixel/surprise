@@ -1,0 +1,122 @@
+* {
+  box-sizing: border-box;
+  font-family: "Comic Sans MS", cursive;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(#2b0033, #000);
+  color: white;
+  text-align: center;
+}
+
+.page {
+  display: none;
+  padding: 40px 20px;
+  min-height: 100vh;
+}
+
+.page.active {
+  display: block;
+}
+
+#holdCircle {
+  width: 150px;
+  margin: 40px auto;
+  position: relative;
+}
+
+svg {
+  transform: rotate(-90deg);
+}
+
+circle {
+  fill: none;
+  stroke-width: 8;
+  stroke: #333;
+}
+
+#progress {
+  stroke: pink;
+  stroke-dasharray: 408;
+  stroke-dashoffset: 408;
+}
+
+.heart {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 40px;
+  animation: pulse 1.4s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.2); }
+  100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+.cards {
+  height: 200px;
+  position: relative;
+}
+
+.card {
+  background: hotpink;
+  padding: 15px;
+  border-radius: 12px;
+  position: absolute;
+  cursor: grab;
+}
+
+#centerHeart {
+  font-size: 50px;
+  margin-top: 30px;
+}
+
+.ticket {
+  border: 3px solid gold;
+  padding: 30px;
+  border-radius: 18px;
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 10px gold; }
+  to { box-shadow: 0 0 30px gold; }
+}
+
+.gallery img {
+  width: 80%;
+  border-radius: 18px;
+  margin: 15px 0;
+  animation: fadeUp 1s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.finalCard {
+  width: 80%;
+  border-radius: 20px;
+  animation: fadeUp 1s ease;
+}
+
+.message {
+  background: white;
+  color: black;
+  padding: 30px;
+  border-radius: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+#confetti {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
