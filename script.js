@@ -6,19 +6,18 @@ let holdTime = 0;
 let timer = null;
 let musicStarted = false;
 
-// Prevent mobile default behavior
-hold.addEventListener("touchstart", e => e.preventDefault(), { passive: false });
+const TOTAL = 408; // circle length
 
-hold.addEventListener("mousedown", startHold);
-hold.addEventListener("touchstart", startHold);
+hold.style.touchAction = "none";
 
-hold.addEventListener("mouseup", stopHold);
-hold.addEventListener("mouseleave", stopHold);
-hold.addEventListener("touchend", stopHold);
-hold.addEventListener("touchcancel", stopHold);
+hold.addEventListener("pointerdown", startHold);
+hold.addEventListener("pointerup", stopHold);
+hold.addEventListener("pointerleave", stopHold);
+hold.addEventListener("pointercancel", stopHold);
 
-function startHold() {
-  if (timer) return; // prevent double start
+function startHold(e) {
+  e.preventDefault();
+  if (timer) return;
 
   if (!musicStarted) {
     music.volume = 0.4;
@@ -27,11 +26,11 @@ function startHold() {
   }
 
   holdTime = 0;
-  progress.style.strokeDashoffset = 408;
+  progress.style.strokeDashoffset = TOTAL;
 
   timer = setInterval(() => {
     holdTime++;
-    progress.style.strokeDashoffset = 408 - holdTime * 4;
+    progress.style.strokeDashoffset = TOTAL - holdTime * 4;
 
     if (holdTime >= 102) {
       stopHold();
@@ -45,7 +44,7 @@ function stopHold() {
   timer = null;
 }
 
-/* PAGE SWITCH */
+/* PAGE CHANGE */
 function nextPage(n) {
   document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
   document.getElementById("page" + n).classList.add("active");
@@ -53,28 +52,38 @@ function nextPage(n) {
   if (n === 3 || n === 5) launchConfetti();
 }
 
-/* DRAGGABLE CARDS */
+/* DRAG (mobile-safe) */
 document.querySelectorAll(".draggable").forEach(card => {
   let offsetX, offsetY;
 
-  card.addEventListener("touchstart", e => {
-    const t = e.touches[0];
-    offsetX = t.clientX - card.offsetLeft;
-    offsetY = t.clientY - card.offsetTop;
+  card.addEventListener("pointerdown", e => {
+    offsetX = e.clientX - card.offsetLeft;
+    offsetY = e.clientY - card.offsetTop;
+    card.setPointerCapture(e.pointerId);
   });
 
-  card.addEventListener("touchmove", e => {
-    const t = e.touches[0];
-    card.style.left = t.clientX - offsetX + "px";
-    card.style.top = t.clientY - offsetY + "px";
+  card.addEventListener("pointermove", e => {
+    if (offsetX !== undefined) {
+      card.style.left = e.clientX - offsetX + "px";
+      card.style.top = e.clientY - offsetY + "px";
+    }
+  });
+
+  card.addEventListener("pointerup", () => {
+    offsetX = offsetY = undefined;
   });
 });
 
 /* CONFETTI */
 const canvas = document.getElementById("confetti");
 const ctx = canvas.getContext("2d");
-canvas.width = innerWidth;
-canvas.height = innerHeight;
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
 let confetti = [];
 
@@ -86,7 +95,7 @@ function launchConfetti() {
       y: -20,
       r: Math.random() * 6 + 4,
       d: Math.random() * 4 + 2,
-      c: hsl(${Math.random() * 360},100%,70%)
+      c: `hsl(${Math.random() * 360},100%,70%)`
     });
   }
   animateConfetti();
@@ -104,4 +113,3 @@ function animateConfetti() {
   confetti = confetti.filter(p => p.y < canvas.height);
   if (confetti.length) requestAnimationFrame(animateConfetti);
 }
-
